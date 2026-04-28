@@ -4,9 +4,9 @@ session_start();
 
 function connectToDb() {
     $dbHost = 'ostrawebb.se';
-    $dbUser = $_ENV['DB_USER'] ?? '';
-    $dbPassword = $_ENV['DB_PASS'] ?? '';
-    $dbDatabase = $_ENV['DB_USER'] ?? '';
+    $dbUser = 'wsp2526_nurism';
+    $dbPassword = 'watyfivi08';
+    $dbDatabase = 'wsp2526_nurism';
 
     $db = new mysqli($dbHost, $dbUser, $dbPassword, $dbDatabase);
 
