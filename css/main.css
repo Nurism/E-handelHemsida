@@ -1,12 +1,88 @@
 html {
     background-color: #eee;
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 14px;
-
 }
 
-p {
+body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+header {
     background-color: #fff;
-    margin: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    margin-left: 1rem;
+}
+
+main {
+    background-color: #fff;
+    padding: 1rem;
+}
+
+.events {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.event {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    width: calc(33% - 1rem);
+    box-sizing: border-box;
+}
+
+.event h3 {
+    margin-top: 0;
+}
+
+form {
+    margin-top: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input, button {
     padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.cart, .checkout {
+    max-width: 600px;
+}
+
+.cart-item, .checkout-item {
+    border-bottom: 1px solid #ccc;
+    padding: 1rem 0;
+}
+
+.popup-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #c3e6cb;
 }
