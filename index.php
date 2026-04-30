@@ -29,6 +29,9 @@ $events = getEvents($mysqli);
             <?php if (isLoggedIn()): ?>
                 <span>Välkommen, <?= htmlspecialchars(getUserById($mysqli, $_SESSION['userId'])['name']) ?>!</span>
                 <a href="cart.php">Kundvagn</a>
+                <?php if (isAdmin($mysqli)): ?>
+                    <a href="create_event.php">Skapa konsert</a>
+                <?php endif; ?>
                 <a href="logout.php">Logga ut</a>
             <?php else: ?>
                 <a href="login.php">Logga in</a>
@@ -43,24 +46,17 @@ $events = getEvents($mysqli);
         <h2>Tillgängliga konserter</h2>
         <div class="events">
             <?php foreach ($events as $event): ?>
-                <div class="event">
-                    <h3><?= htmlspecialchars($event['artist']) ?></h3>
-                    <p>Plats: <?= htmlspecialchars($event['venue']) ?></p>
-                    <p>Datum: <?= htmlspecialchars($event['event_date']) ?></p>
-                    <p>Pris: <?= htmlspecialchars($event['price']) ?> SEK</p>
-                    <p>Biljetter kvar: <?= htmlspecialchars($event['tickets_left']) ?></p>
-                    <?php if ($event['tickets_left'] > 0 && isLoggedIn()): ?>
-                        <form action="add_to_cart.php" method="post">
-                            <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
-                            <label>Antal: <input type="number" name="quantity" min="1" max="<?= $event['tickets_left'] ?>" value="1"></label>
-                            <button type="submit">Lägg i kundvagn</button>
-                        </form>
-                    <?php elseif (!isLoggedIn()): ?>
-                        <p><a href="login.php">Logga in för att köpa</a></p>
-                    <?php else: ?>
-                        <p>Slut på biljetter</p>
-                    <?php endif; ?>
-                </div>
+                <a href="event_detail.php?id=<?= $event['id'] ?>" class="event-link">
+                    <div class="event">
+                        <?php if ($event['image_url']): ?>
+                            <img src="<?= htmlspecialchars($event['image_url']) ?>" alt="Bild för <?= htmlspecialchars($event['artist']) ?>" class="event-image">
+                        <?php else: ?>
+                            <div class="no-image">Ingen bild</div>
+                        <?php endif; ?>
+                        <h3><?= htmlspecialchars($event['artist']) ?></h3>
+                        <p class="event-date"><?= htmlspecialchars(date('Y-m-d H:i', strtotime($event['event_date']))) ?></p>
+                    </div>
+                </a>
             <?php endforeach; ?>
         </div>
     </main>

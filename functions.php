@@ -2,11 +2,19 @@
 
 session_start();
 
+// Load installed packages
+require_once 'vendor/autoload.php';
+
+// Load secrets from the file .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+
 function connectToDb() {
     $dbHost = 'ostrawebb.se';
-    $dbUser = 'wsp2526_nurism';
-    $dbPassword = 'watyfivi08';
-    $dbDatabase = 'wsp2526_nurism';
+    $dbUser = $_ENV['DB_USER'];
+    $dbPassword = $_ENV['PASS'];
+    $dbDatabase = $_ENV['DB_USER'];
 
     $db = new mysqli($dbHost, $dbUser, $dbPassword, $dbDatabase);
 
@@ -153,6 +161,20 @@ function logout() {
     session_destroy();
     header("Location: index.php");
     exit();
+}
+
+function isAdmin($db) {
+    if (!isLoggedIn()) {
+        return false;
+    }
+    $user = getUserById($db, $_SESSION['userId']);
+    return $user['name'] === 'Admin';
+}
+
+function createEvent($db, $artist, $venue, $event_date, $description, $price, $tickets_left, $image_url = null) {
+    $statement = $db->prepare("INSERT INTO events (artist, venue, event_date, description, price, tickets_left, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $statement->bind_param('ssssdis', $artist, $venue, $event_date, $description, $price, $tickets_left, $image_url);
+    $statement->execute();
 }
 
 ?>
