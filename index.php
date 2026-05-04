@@ -1,46 +1,11 @@
 <?php
 
-require_once 'functions.php';
+$pageTitle = 'VenueNow';
+include 'top.php';
 
-// Connect to database
-$mysqli = connectToDb();
-
-// Get all events
-$events = getEvents($mysqli);
+$events = getEvents($db);
 
 ?>
-
-
-<!DOCTYPE html>
-<html lang="sv">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/main.css" rel="stylesheet">
-    <title>Konsertbiljetter</title>
-</head>
-
-<body>
-
-    <header>
-        <h1>Konsertbiljetter</h1>
-        <nav>
-            <?php if (isLoggedIn()): ?>
-                <span>Välkommen, <?= htmlspecialchars(getUserById($mysqli, $_SESSION['userId'])['name']) ?>!</span>
-                <a href="cart.php">Kundvagn</a>
-                <?php if (isAdmin($mysqli)): ?>
-                    <a href="create_event.php">Skapa konsert</a>
-                <?php endif; ?>
-                <a href="logout.php">Logga ut</a>
-            <?php else: ?>
-                <a href="login.php">Logga in</a>
-                <a href="register.php">Registrera</a>
-            <?php endif; ?>
-        </nav>
-    </header>
-
-    <?php getMessage(); ?>
 
     <main>
         <h2>Tillgängliga konserter</h2>
@@ -61,6 +26,4 @@ $events = getEvents($mysqli);
         </div>
     </main>
 
-</body>
-
-</html>
+<?php include 'bottom.php'; ?>

@@ -1,11 +1,8 @@
 <?php
 
-require_once 'vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-require_once 'functions.php';
-
-$db = connectToDb();
+$pageTitle = 'Logga in';
+$extraNav = '<a href="index.php">Hem</a>';
+include 'top.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
@@ -20,25 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/main.css" rel="stylesheet">
-    <title>Logga in</title>
-</head>
-<body>
-    <header>
-        <h1>Konsertbiljetter</h1>
-        <nav>
-            <a href="index.php">Hem</a>
-            <a href="register.php">Registrera</a>
-        </nav>
-    </header>
-
-    <?php getMessage(); ?>
-
     <main>
         <h2>Logga in</h2>
         <form action="login.php" method="post">
@@ -47,5 +25,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Logga in</button>
         </form>
     </main>
-</body>
-</html>
+
+<?php include 'bottom.php'; ?>

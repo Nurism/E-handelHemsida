@@ -1,11 +1,8 @@
 <?php
 
-require_once 'vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-require_once 'functions.php';
-
-$db = connectToDb();
+$pageTitle = 'Kassa';
+$extraNav = '<a href="index.php">Hem</a> <a href="cart.php">Kundvagn</a>';
+include 'top.php';
 
 if (!isLoggedIn()) {
     redirectWithMessage('login.php', 'Du måste logga in.');
@@ -27,27 +24,8 @@ foreach ($cart as $item) {
     $total += $item['event']['price'] * $item['quantity'];
 }
 
+
 ?>
-
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/main.css" rel="stylesheet">
-    <title>Kassa</title>
-</head>
-<body>
-    <header>
-        <h1>Konsertbiljetter</h1>
-        <nav>
-            <a href="index.php">Hem</a>
-            <a href="cart.php">Kundvagn</a>
-            <a href="logout.php">Logga ut</a>
-        </nav>
-    </header>
-
-    <?php getMessage(); ?>
 
     <main>
         <h2>Kassa</h2>
@@ -66,5 +44,5 @@ foreach ($cart as $item) {
             </form>
         </div>
     </main>
-</body>
-</html>
+
+<?php include 'bottom.php'; ?>

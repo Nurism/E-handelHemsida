@@ -1,54 +1,23 @@
 <?php
 
-require_once 'functions.php';
-
-// Connect to database
-$mysqli = connectToDb();
+$pageTitle = 'VenueNow';
+$extraNav = '<a href="index.php">Tillbaka till konserter</a>';
+include 'top.php';
 
 $eventId = $_GET['id'] ?? null;
 if (!$eventId) {
     redirectWithMessage('index.php', 'Ogiltigt event ID.');
 }
 
-$event = getEventById($mysqli, $eventId);
+$event = getEventById($db, $eventId);
 if (!$event) {
     redirectWithMessage('index.php', 'Eventet hittades inte.');
 }
 
+$dynamicTitle = htmlspecialchars($event['artist']) . ' - VenueNow';
+echo '<script>document.title = ' . json_encode($dynamicTitle) . ';</script>';
+
 ?>
-
-
-<!DOCTYPE html>
-<html lang="sv">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/main.css" rel="stylesheet">
-    <title><?= htmlspecialchars($event['artist']) ?> - Konsertbiljetter</title>
-</head>
-
-<body>
-
-    <header>
-        <h1>Konsertbiljetter</h1>
-        <nav>
-            <a href="index.php">Tillbaka till konserter</a>
-            <?php if (isLoggedIn()): ?>
-                <span>Välkommen, <?= htmlspecialchars(getUserById($mysqli, $_SESSION['userId'])['name']) ?>!</span>
-                <a href="cart.php">Kundvagn</a>
-                <?php if (isAdmin($mysqli)): ?>
-                    <a href="create_event.php">Skapa konsert</a>
-                <?php endif; ?>
-                <a href="logout.php">Logga ut</a>
-            <?php else: ?>
-                <a href="login.php">Logga in</a>
-                <a href="register.php">Registrera</a>
-            <?php endif; ?>
-        </nav>
-    </header>
-
-    <?php getMessage(); ?>
 
     <main>
         <div class="event-detail">
@@ -78,6 +47,4 @@ if (!$event) {
         </div>
     </main>
 
-</body>
-
-</html>
+<?php include 'bottom.php'; ?>

@@ -13,7 +13,7 @@ $dotenv->load();
 function connectToDb() {
     $dbHost = 'ostrawebb.se';
     $dbUser = $_ENV['DB_USER'];
-    $dbPassword = $_ENV['PASS'];
+    $dbPassword = $_ENV['DB_PASS'];
     $dbDatabase = $_ENV['DB_USER'];
 
     $db = new mysqli($dbHost, $dbUser, $dbPassword, $dbDatabase);
