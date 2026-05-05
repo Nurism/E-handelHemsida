@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+ob_start();
 
 // Load installed packages
 require_once 'vendor/autoload.php';
@@ -132,6 +133,24 @@ function removeFromCart($eventId) {
     if (isset($_SESSION['cart'][$eventId])) {
         unset($_SESSION['cart'][$eventId]);
     }
+}
+
+function updateCartQuantity($db, $eventId, $quantity) {
+    if ($quantity < 1) {
+        return false;
+    }
+
+    $event = getEventById($db, $eventId);
+    if (! $event) {
+        return false;
+    }
+
+    if ($quantity > $event['tickets_left']) {
+        return false;
+    }
+
+    $_SESSION['cart'][$eventId] = $quantity;
+    return true;
 }
 
 function createOrder($db, $userId, $cart) {
