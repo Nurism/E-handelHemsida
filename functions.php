@@ -176,6 +176,25 @@ function createOrder($db, $userId, $cart) {
     return $orderId;
 }
 
+function getOrdersByUser($db, $userId) {
+    $statement = $db->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC");
+    $statement->bind_param('i', $userId);
+    $statement->execute();
+    $result = $statement->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+function getOrderItems($db, $orderId) {
+    $statement = $db->prepare(
+        "SELECT oi.*, e.artist, e.venue, e.image_url FROM order_items oi " .
+        "LEFT JOIN events e ON oi.event_id = e.id WHERE oi.order_id = ?"
+    );
+    $statement->bind_param('i', $orderId);
+    $statement->execute();
+    $result = $statement->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
 function logout() {
     session_destroy();
     header("Location: index.php");

@@ -17,6 +17,7 @@ $db = connectToDb();
             <?php if (isset($extraNav)) echo $extraNav; ?>
             <?php if (isLoggedIn()): ?>
                 <span>Välkommen, <?= htmlspecialchars(getUserById($db, $_SESSION['userId'])['name']) ?>!</span>
+                <a href="orders.php">Mina ordrar</a>
                 <a href="cart.php">Kundvagn</a>
                 <?php if (isAdmin($db)): ?>
                     <a href="create_event.php">Skapa konsert</a>
