@@ -1,4 +1,5 @@
 <?php
+// Load common helpers and establish a shared database connection for every page.
 require_once 'functions.php';
 $db = connectToDb();
 ?>

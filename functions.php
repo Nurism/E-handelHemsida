@@ -11,6 +11,11 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 
+/**
+ * Connect to the MySQL database.
+ *
+ * @return mysqli
+ */
 function connectToDb() {
     $dbHost = 'ostrawebb.se';
     $dbUser = $_ENV['DB_USER'];
@@ -26,10 +31,21 @@ function connectToDb() {
     return $db;
 }
 
+/**
+ * Store a status message in the user session.
+ *
+ * @param string $message
+ * @return void
+ */
 function setMessage($message) {
     $_SESSION['message'] = $message;
 }
 
+/**
+ * Show the current session message and remove it.
+ *
+ * @return void
+ */
 function getMessage() {
     if (isset($_SESSION['message'])){
         echo '<div id="status-popup" class="popup-message">' . $_SESSION['message'] . '</div>';
@@ -37,6 +53,15 @@ function getMessage() {
     }
 }
 
+/**
+ * Create a new user record.
+ *
+ * @param mysqli $db
+ * @param string $name
+ * @param string $email
+ * @param string $password
+ * @return void
+ */
 function createUser($db, $name, $email, $password) {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -45,6 +70,13 @@ function createUser($db, $name, $email, $password) {
     $statement->execute();
 }
 
+/**
+ * Get a user by email address.
+ *
+ * @param mysqli $db
+ * @param string $email
+ * @return array|null
+ */
 function getUserByEmail($db, $email){
     $statement = $db->prepare("SELECT * FROM users WHERE email = ?");
     $statement->bind_param('s', $email);
@@ -53,6 +85,13 @@ function getUserByEmail($db, $email){
     return $result->fetch_assoc();
 }
 
+/**
+ * Get a user by ID.
+ *
+ * @param mysqli $db
+ * @param int $userId
+ * @return array|null
+ */
 function getUserById($db, $userId){
     $statement = $db->prepare("SELECT * FROM users WHERE id = ?");
     $statement->bind_param('i', $userId);
@@ -61,12 +100,27 @@ function getUserById($db, $userId){
     return $result->fetch_assoc();
 }
 
+/**
+ * Redirect to another page and set a session message.
+ *
+ * @param string $url
+ * @param string $message
+ * @return void
+ */
 function redirectWithMessage($url, $message){
     $_SESSION['message'] = $message;
     header("Location: " . $url);
     exit();
 }
 
+/**
+ * Authenticate the user with email and password.
+ *
+ * @param mysqli $db
+ * @param string $email
+ * @param string $password
+ * @return bool
+ */
 function login($db, $email, $password){
     $user = getUserByEmail($db, $email);
 
@@ -83,6 +137,11 @@ function login($db, $email, $password){
     return true;
 }
 
+/**
+ * Check whether a user is logged in.
+ *
+ * @return bool
+ */
 function isLoggedIn(){
     if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] != TRUE) {
         return FALSE;
@@ -91,11 +150,24 @@ function isLoggedIn(){
     return TRUE;
 }
 
+/**
+ * Get all events from the database.
+ *
+ * @param mysqli $db
+ * @return array
+ */
 function getEvents($db) {
     $result = $db->query("SELECT * FROM events ORDER BY event_date");
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+/**
+ * Get a single event by ID.
+ *
+ * @param mysqli $db
+ * @param int $id
+ * @return array|null
+ */
 function getEventById($db, $id) {
     $statement = $db->prepare("SELECT * FROM events WHERE id = ?");
     $statement->bind_param('i', $id);
@@ -104,6 +176,13 @@ function getEventById($db, $id) {
     return $result->fetch_assoc();
 }
 
+/**
+ * Add an event to the current cart.
+ *
+ * @param int $eventId
+ * @param int $quantity
+ * @return void
+ */
 function addToCart($eventId, $quantity) {
     if (!isset($_SESSION['cart'])) {
         $_SESSION['cart'] = [];
@@ -115,6 +194,12 @@ function addToCart($eventId, $quantity) {
     }
 }
 
+/**
+ * Get the current cart with event details.
+ *
+ * @param mysqli $db
+ * @return array
+ */
 function getCart($db) {
     if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
         return [];
@@ -129,12 +214,26 @@ function getCart($db) {
     return $cart;
 }
 
+/**
+ * Remove an item from the cart.
+ *
+ * @param int $eventId
+ * @return void
+ */
 function removeFromCart($eventId) {
     if (isset($_SESSION['cart'][$eventId])) {
         unset($_SESSION['cart'][$eventId]);
     }
 }
 
+/**
+ * Update the quantity of an event in the cart.
+ *
+ * @param mysqli $db
+ * @param int $eventId
+ * @param int $quantity
+ * @return bool
+ */
 function updateCartQuantity($db, $eventId, $quantity) {
     if ($quantity < 1) {
         return false;
@@ -153,6 +252,14 @@ function updateCartQuantity($db, $eventId, $quantity) {
     return true;
 }
 
+/**
+ * Create an order from the cart and update ticket inventory.
+ *
+ * @param mysqli $db
+ * @param int $userId
+ * @param array $cart
+ * @return int
+ */
 function createOrder($db, $userId, $cart) {
     $total = 0;
     foreach ($cart as $item) {
@@ -176,6 +283,13 @@ function createOrder($db, $userId, $cart) {
     return $orderId;
 }
 
+/**
+ * Get all orders for a given user.
+ *
+ * @param mysqli $db
+ * @param int $userId
+ * @return array
+ */
 function getOrdersByUser($db, $userId) {
     $statement = $db->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC");
     $statement->bind_param('i', $userId);
@@ -184,6 +298,13 @@ function getOrdersByUser($db, $userId) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+/**
+ * Get order items for a given order.
+ *
+ * @param mysqli $db
+ * @param int $orderId
+ * @return array
+ */
 function getOrderItems($db, $orderId) {
     $statement = $db->prepare(
         "SELECT oi.*, e.artist, e.venue, e.image_url FROM order_items oi " .
@@ -195,12 +316,23 @@ function getOrderItems($db, $orderId) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+/**
+ * End the session and redirect to the home page.
+ *
+ * @return void
+ */
 function logout() {
     session_destroy();
     header("Location: index.php");
     exit();
 }
 
+/**
+ * Check whether the current user is an administrator.
+ *
+ * @param mysqli $db
+ * @return bool
+ */
 function isAdmin($db) {
     if (!isLoggedIn()) {
         return false;
@@ -209,6 +341,19 @@ function isAdmin($db) {
     return $user['name'] === 'Admin';
 }
 
+/**
+ * Create a new event.
+ *
+ * @param mysqli $db
+ * @param string $artist
+ * @param string $venue
+ * @param string $event_date
+ * @param string $description
+ * @param float $price
+ * @param int $tickets_left
+ * @param string|null $image_url
+ * @return void
+ */
 function createEvent($db, $artist, $venue, $event_date, $description, $price, $tickets_left, $image_url = null) {
     $statement = $db->prepare("INSERT INTO events (artist, venue, event_date, description, price, tickets_left, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $statement->bind_param('ssssdis', $artist, $venue, $event_date, $description, $price, $tickets_left, $image_url);

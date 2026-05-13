@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
+    // Prevent duplicate registrations by checking the email first.
     if (getUserByEmail($db, $email)) {
         setMessage('E-postadressen är redan registrerad.');
     } else {

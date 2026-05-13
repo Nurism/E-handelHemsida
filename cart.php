@@ -8,6 +8,7 @@ if (!isLoggedIn()) {
     redirectWithMessage('login.php', 'Du måste logga in.');
 }
 
+// Calculate cart total and show stored cart items.
 $cart = getCart($db);
 $total = 0;
 foreach ($cart as $item) {

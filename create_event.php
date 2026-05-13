@@ -4,7 +4,7 @@ $pageTitle = 'Skapa konsert';
 $extraNav = '<a href="index.php">Tillbaka</a>';
 include 'top.php';
 
-// Check if admin
+// Check if admin because only administrators may create new events.
 if (!isAdmin($db)) {
     redirectWithMessage('index.php', 'Du har inte behörighet att skapa konserter.');
 }
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tickets_left = $_POST['tickets_left'] ?? 0;
     $image_url = $_POST['image_url'] ?? null;
 
-    // Validate input
+    // Validate input before creating the event record.
     if (empty($artist) || empty($venue) || empty($event_date) || $price <= 0 || $tickets_left <= 0) {
         setMessage('Alla obligatoriska fält måste fyllas i korrekt.');
     } else {

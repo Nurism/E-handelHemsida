@@ -8,6 +8,7 @@ if (!isLoggedIn()) {
     redirectWithMessage('login.php', 'Du måste logga in för att se dina ordrar.');
 }
 
+// Load the current user's order history.
 $orders = getOrdersByUser($db, $_SESSION['userId']);
 ?>
 

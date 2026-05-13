@@ -13,12 +13,14 @@ if (empty($cart)) {
     redirectWithMessage('cart.php', 'Kundvagnen är tom.');
 }
 
+// Submit the order and clear the cart after confirmation.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $orderId = createOrder($db, $_SESSION['userId'], $cart);
     $_SESSION['cart'] = []; // Clear cart
     redirectWithMessage('index.php', 'Beställning genomförd! Ordernummer: ' . $orderId);
 }
 
+// Compute the total price for the checkout review.
 $total = 0;
 foreach ($cart as $item) {
     $total += $item['event']['price'] * $item['quantity'];

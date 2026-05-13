@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
+    // Attempt to authenticate and redirect with feedback.
     if (login($db, $email, $password)) {
         redirectWithMessage('index.php', 'Inloggning lyckades!');
     } else {

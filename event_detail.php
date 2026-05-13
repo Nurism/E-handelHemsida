@@ -14,6 +14,7 @@ if (!$event) {
     redirectWithMessage('index.php', 'Eventet hittades inte.');
 }
 
+// Update the browser title based on the loaded event.
 $dynamicTitle = htmlspecialchars($event['artist']) . ' - VenueNow';
 echo '<script>document.title = ' . json_encode($dynamicTitle) . ';</script>';
 

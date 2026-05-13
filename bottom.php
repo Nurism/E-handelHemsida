@@ -8,6 +8,7 @@
                 return;
             }
 
+            // Hide and remove flash messages automatically after a short delay.
             setTimeout(function() {
                 statusMessage.style.opacity = '0';
                 statusMessage.style.transform = 'translateY(-10px)';
