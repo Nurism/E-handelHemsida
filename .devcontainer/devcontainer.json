@@ -3,6 +3,7 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "postCreateCommand": "composer install --no-interaction",
   "customizations": {
     "vscode": {
       "extensions": [
